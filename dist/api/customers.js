@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllCustomers = exports.signup = void 0;
+exports.getCustomer = exports.getAllCustomers = exports.signup = void 0;
 const database_1 = require("../config/database");
 const validator_1 = require("../utils/validator");
 const signup = (request, response) => {
@@ -64,6 +64,40 @@ const getAllCustomers = (request, response) => {
     });
 };
 exports.getAllCustomers = getAllCustomers;
+const getCustomer = (request, response) => {
+    const accountNumber = request.params.accountNumber;
+    (0, database_1.knex)("customers").select("*").where("account_number", accountNumber)
+        .first()
+        .then((customer) => {
+        if (!customer) {
+            const notFoundResponse = {
+                status: 404,
+                message: `No customer with the account number ${accountNumber} could be found`,
+            };
+            console.log(notFoundResponse);
+            response.status(404).json(notFoundResponse);
+        }
+        else {
+            const customerProfile = {
+                firstName: customer.first_name,
+                middleName: customer.middle_name,
+                lastName: customer.last_name,
+                accountNumber: customer.account_number
+            };
+            const successResponse = {
+                status: 200,
+                message: "Customer Profile",
+                data: customerProfile,
+            };
+            console.log(successResponse);
+            response.status(200).json(successResponse);
+        }
+    })
+        .catch((e) => {
+        sendServerErrorResponse(e, response);
+    });
+};
+exports.getCustomer = getCustomer;
 const sendServerErrorResponse = function (e, response) {
     const errorResponse = {
         status: 500,

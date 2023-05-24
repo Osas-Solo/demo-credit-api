@@ -8,4 +8,5 @@ const customers_1 = require("../api/customers");
 const router = express_1.default.Router();
 router.post("/", customers_1.signup);
 router.get("/", customers_1.getAllCustomers);
+router.get("/:accountNumber", customers_1.getCustomer);
 module.exports = router;

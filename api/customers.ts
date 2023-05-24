@@ -71,7 +71,44 @@ const getAllCustomers = (request: Request, response: Response) => {
     }).catch((e: Error) => {
         sendServerErrorResponse(e, response);
     });
-}
+};
+
+const getCustomer = (request: Request, response: Response) => {
+    const accountNumber: string = request.params.accountNumber;
+
+    knex("customers").select("*").where("account_number", accountNumber)
+        .first()
+        .then((customer: any) => {
+            if (!customer) {
+                const notFoundResponse: APIResponse = {
+                    status: 404,
+                    message: `No customer with the account number ${accountNumber} could be found`,
+                };
+
+                console.log(notFoundResponse);
+                response.status(404).json(notFoundResponse);
+            } else {
+                const customerProfile: Customer = {
+                    firstName: customer.first_name,
+                    middleName: customer.middle_name,
+                    lastName: customer.last_name,
+                    accountNumber: customer.account_number
+                };
+
+                const successResponse: APIResponse = {
+                    status: 200,
+                    message: "Customer Profile",
+                    data: customerProfile,
+                };
+
+                console.log(successResponse);
+                response.status(200).json(successResponse);
+            }
+        })
+        .catch((e: Error) => {
+            sendServerErrorResponse(e, response);
+        });
+};
 
 interface CustomerValidationError {
     firstNameError?: string,
@@ -147,4 +184,4 @@ const generateAccountNumber = (): string => {
     return accountNumber;
 };
 
-export {signup, getAllCustomers};
+export {signup, getAllCustomers, getCustomer};
