@@ -167,6 +167,7 @@ const generateAccountNumber = (): string => {
             }
         })
         .catch((e: any) => {
+            console.log(e);
             generateAccountNumber();
         });
 

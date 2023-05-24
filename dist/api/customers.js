@@ -139,6 +139,7 @@ const generateAccountNumber = () => {
         }
     })
         .catch((e) => {
+        console.log(e);
         generateAccountNumber();
     });
     return accountNumber;

@@ -200,6 +200,129 @@ const withdraw = (request: Request, response: Response) => {
     }
 };
 
+const transfer = (request: Request, response: Response) => {
+    const senderAccountNumber: string = request.params.accountNumber;
+    const transaction: TransactionRequest = request.body;
+
+    try {
+        const validationError: TransactionValidationError = validateTransaction(transaction);
+
+        if (areTransactionDetailsValid(validationError)) {
+            knex("customers").where("account_number", transaction.accountNumber)
+                .first()
+                .then((receiver: any) => {
+                    if (receiver) {
+                        const receiverProfile: Customer = {
+                            id: receiver.id,
+                            firstName: receiver.first_name,
+                            middleName: receiver.middle_name,
+                            lastName: receiver.last_name,
+                            accountNumber: receiver.account_number,
+                        };
+
+                        knex("customers").where({
+                            account_number: senderAccountNumber,
+                            pin: transaction.pin
+                        })
+                            .first()
+                            .then((sender: any) => {
+                                if (sender) {
+                                    if (transaction.amount <= sender.account_balance)  {
+                                        const senderProfile: Customer = {
+                                            id: sender.id,
+                                            firstName: sender.first_name,
+                                            middleName: sender.middle_name,
+                                            lastName: sender.last_name,
+                                            accountNumber: sender.account_number,
+                                        };
+
+                                        knex("transactions").insert(
+                                            {
+                                                sender_id: sender.id,
+                                                receiver_id: receiver.id,
+                                                amount: transaction.amount,
+                                                type: "Transfer",
+                                            }
+                                        ).then(() => {
+                                            knex("customers").where("account_number", senderAccountNumber)
+                                                .update("account_balance", knex.raw("account_balance - ?", [transaction.amount]))
+                                                .then(() => {
+                                                    knex("customers").where("account_number", transaction.accountNumber)
+                                                        .update("account_balance", knex.raw("account_balance + ?", [transaction.amount]))
+                                                        .then();
+
+                                                    knex("customers")
+                                                        .where("account_number", senderAccountNumber)
+                                                        .first()
+                                                        .then((updatedCustomerProfile: any) => {
+                                                            const transactionDetails: Transaction = {
+                                                                sender: senderProfile,
+                                                                receiver: receiverProfile,
+                                                                amount: Number(transaction.amount),
+                                                                type: "Transfer",
+                                                            };
+
+                                                            const successResponse: APIResponse = {
+                                                                status: 201,
+                                                                message: "Transfer Success",
+                                                                data: {
+                                                                    transaction: transactionDetails,
+                                                                    accountBalance: updatedCustomerProfile.account_balance,
+                                                                },
+                                                            };
+
+                                                            console.log(successResponse);
+                                                            response.status(201).json(successResponse);
+                                                        });
+                                                })
+                                        });
+                                    } else {
+                                        const failureResponse: APIResponse = {
+                                            status: 401,
+                                            message: "Transfer Failure",
+                                            error: "Sorry, you do not have enough funds to make this withdrawal",
+                                        }
+
+                                        console.log(failureResponse);
+                                        response.status(401).json(failureResponse);
+                                    }
+                                } else {
+                                    const failureResponse: APIResponse = {
+                                        status: 401,
+                                        message: "Transfer Failure",
+                                        error: "Sorry, your account number or pin might be incorrect",
+                                    };
+
+                                    console.log(failureResponse);
+                                    response.status(401).json(failureResponse);
+                                }
+                        });
+                    } else {
+                        const notFoundResponse: APIResponse = {
+                            status: 404,
+                            message: "Transfer Failure",
+                            error: `No customer with the account number ${transaction.accountNumber} could be found`,
+                        }
+
+                        console.log(notFoundResponse);
+                        response.status(401).json(notFoundResponse);
+                    }
+                });
+        } else {
+            const failureResponse: APIResponse = {
+                status: 401,
+                message: "Transfer Failure",
+                error: validationError,
+            }
+
+            console.log(failureResponse);
+            response.status(401).json(failureResponse);
+        }
+    } catch (e: any) {
+        sendServerErrorResponse(e, response);
+    }
+};
+
 interface TransactionRequest {
     accountNumber: string,
     pin: string,
@@ -235,4 +358,4 @@ const areTransactionDetailsValid = (validationError: TransactionValidationError)
     return Object.keys(validationError).length === 0;
 };
 
-export {deposit, withdraw};
+export {deposit, withdraw, transfer};
