@@ -7,4 +7,5 @@ const express_1 = __importDefault(require("express"));
 const transactions_1 = require("../api/transactions");
 const router = express_1.default.Router();
 router.post("/deposit", transactions_1.deposit);
+router.post("/withdraw", transactions_1.withdraw);
 module.exports = router;
