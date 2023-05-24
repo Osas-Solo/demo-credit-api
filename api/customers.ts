@@ -42,16 +42,35 @@ const signup = (request: Request, response: Response) => {
             console.log(failureResponse);
             response.status(401).json(failureResponse);
         }
-    } catch (e) {
-        const errorResponse: APIResponse = {
-            status: 500,
-            message: "Internal Server Error",
-        };
-
-        console.log(e);
-        console.log(errorResponse);
-        response.status(500).json(errorResponse);
+    } catch (e: any) {
+        sendServerErrorResponse(e, response);
     }
+}
+
+const getAllCustomers = (request: Request, response: Response) => {
+    knex("customers").select("*").then((customers: any) => {
+        let summarisedCustomersProfiles: Customer[] = [];
+
+        customers.forEach((currentCustomer: any) => {
+            summarisedCustomersProfiles.push({
+                firstName: currentCustomer.first_name,
+                middleName: currentCustomer.middle_name,
+                lastName: currentCustomer.last_name,
+                accountNumber: currentCustomer.account_number,
+            });
+        });
+
+        const successResponse: APIResponse = {
+            status: 200,
+            message: "OK",
+            data: summarisedCustomersProfiles,
+        }
+
+        console.log(successResponse);
+        response.status(200).json(successResponse);
+    }).catch((e: Error) => {
+        sendServerErrorResponse(e, response);
+    });
 }
 
 interface CustomerValidationError {
@@ -61,6 +80,17 @@ interface CustomerValidationError {
     bankVerificationNumberError?: string,
     pinError?: string,
 }
+
+const sendServerErrorResponse = function (e: Error, response: Response) {
+    const errorResponse: APIResponse = {
+        status: 500,
+        message: "Internal Server Error",
+    };
+
+    console.log(e);
+    console.log(errorResponse);
+    response.status(500).json(errorResponse);
+};
 
 const validateCustomer = (customer: Customer): CustomerValidationError => {
     const customerError: CustomerValidationError = {};
@@ -117,4 +147,4 @@ const generateAccountNumber = (): string => {
     return accountNumber;
 };
 
-export {signup};
+export {signup, getAllCustomers};

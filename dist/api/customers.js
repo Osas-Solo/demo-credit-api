@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.signup = void 0;
+exports.getAllCustomers = exports.signup = void 0;
 const database_1 = require("../config/database");
 const validator_1 = require("../utils/validator");
 const signup = (request, response) => {
@@ -37,16 +37,42 @@ const signup = (request, response) => {
         }
     }
     catch (e) {
-        const errorResponse = {
-            status: 500,
-            message: "Internal Server Error",
-        };
-        console.log(e);
-        console.log(errorResponse);
-        response.status(500).json(errorResponse);
+        sendServerErrorResponse(e, response);
     }
 };
 exports.signup = signup;
+const getAllCustomers = (request, response) => {
+    (0, database_1.knex)("customers").select("*").then((customers) => {
+        let summarisedCustomersProfiles = [];
+        customers.forEach((currentCustomer) => {
+            summarisedCustomersProfiles.push({
+                firstName: currentCustomer.first_name,
+                middleName: currentCustomer.middle_name,
+                lastName: currentCustomer.last_name,
+                accountNumber: currentCustomer.account_number,
+            });
+        });
+        const successResponse = {
+            status: 200,
+            message: "OK",
+            data: summarisedCustomersProfiles,
+        };
+        console.log(successResponse);
+        response.status(200).json(successResponse);
+    }).catch((e) => {
+        sendServerErrorResponse(e, response);
+    });
+};
+exports.getAllCustomers = getAllCustomers;
+const sendServerErrorResponse = function (e, response) {
+    const errorResponse = {
+        status: 500,
+        message: "Internal Server Error",
+    };
+    console.log(e);
+    console.log(errorResponse);
+    response.status(500).json(errorResponse);
+};
 const validateCustomer = (customer) => {
     var _a;
     const customerError = {};
