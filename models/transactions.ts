@@ -1,9 +1,10 @@
 import { Customer } from './customers';
 
 export interface Transaction {
-    id: number,
+    id?: number,
     sender: Customer,
     receiver: Customer,
     amount: number,
-    time: string,
+    type: string,
+    time?: string,
 }

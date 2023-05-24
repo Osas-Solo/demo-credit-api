@@ -12,6 +12,11 @@ const isAccountNumberValid = (accountNumber: string): boolean => {
 
 const isPinValid = (pin: string): boolean => {
     return /[0-9]{4}/.test(pin);
+};
+
+const isAmountValid = (amount: string): boolean => {
+    //  the regex below checks if the amount is a positive number (> 0) with a maximum of 2 decimal places
+    return /^[1-9][0-9]?(\.[0-9]{2})?/.test(amount) && Number(amount) <= 5_000_000;
 }
 
-export {isNameValid, isAccountNumberValid, isBankVerificationNumberValid, isPinValid};
+export {isNameValid, isAccountNumberValid, isBankVerificationNumberValid, isPinValid, isAmountValid};

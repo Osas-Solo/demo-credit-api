@@ -1,6 +1,6 @@
 import {knex} from "../config/database";
 import {Request, Response} from "express";
-import {APIResponse} from "../models/responses";
+import {APIResponse, sendServerErrorResponse} from "../models/responses";
 import {Customer} from "../models/customers";
 import {isBankVerificationNumberValid, isNameValid, isPinValid} from "../utils/validator";
 
@@ -118,17 +118,6 @@ interface CustomerValidationError {
     pinError?: string,
 }
 
-const sendServerErrorResponse = function (e: Error, response: Response) {
-    const errorResponse: APIResponse = {
-        status: 500,
-        message: "Internal Server Error",
-    };
-
-    console.log(e);
-    console.log(errorResponse);
-    response.status(500).json(errorResponse);
-};
-
 const validateCustomer = (customer: Customer): CustomerValidationError => {
     const customerError: CustomerValidationError = {};
 
@@ -158,7 +147,7 @@ const validateCustomer = (customer: Customer): CustomerValidationError => {
     }
 
     return customerError;
-}
+};
 
 const areCustomerDetailsValid = (validationError: CustomerValidationError) => {
     return Object.keys(validationError).length === 0;

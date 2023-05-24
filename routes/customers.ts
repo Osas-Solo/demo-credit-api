@@ -1,4 +1,4 @@
-import express, {Request, Response, Router} from "express";
+import express, {Router} from "express";
 import {getAllCustomers, getCustomer, signup} from "../api/customers";
 
 const router: Router = express.Router();

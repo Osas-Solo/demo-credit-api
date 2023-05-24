@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getCustomer = exports.getAllCustomers = exports.signup = void 0;
 const database_1 = require("../config/database");
+const responses_1 = require("../models/responses");
 const validator_1 = require("../utils/validator");
 const signup = (request, response) => {
     const customer = request.body;
@@ -37,7 +38,7 @@ const signup = (request, response) => {
         }
     }
     catch (e) {
-        sendServerErrorResponse(e, response);
+        (0, responses_1.sendServerErrorResponse)(e, response);
     }
 };
 exports.signup = signup;
@@ -60,7 +61,7 @@ const getAllCustomers = (request, response) => {
         console.log(successResponse);
         response.status(200).json(successResponse);
     }).catch((e) => {
-        sendServerErrorResponse(e, response);
+        (0, responses_1.sendServerErrorResponse)(e, response);
     });
 };
 exports.getAllCustomers = getAllCustomers;
@@ -94,19 +95,10 @@ const getCustomer = (request, response) => {
         }
     })
         .catch((e) => {
-        sendServerErrorResponse(e, response);
+        (0, responses_1.sendServerErrorResponse)(e, response);
     });
 };
 exports.getCustomer = getCustomer;
-const sendServerErrorResponse = function (e, response) {
-    const errorResponse = {
-        status: 500,
-        message: "Internal Server Error",
-    };
-    console.log(e);
-    console.log(errorResponse);
-    response.status(500).json(errorResponse);
-};
 const validateCustomer = (customer) => {
     var _a;
     const customerError = {};
