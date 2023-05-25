@@ -4,7 +4,7 @@ export interface Customer {
     middleName?: string,
     lastName: string,
     bankVerificationNumber?: string,
-    accountNumber: string,
+    accountNumber?: string,
     pin?: string,
     accountBalance?: number,
 }

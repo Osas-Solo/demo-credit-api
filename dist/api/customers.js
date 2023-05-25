@@ -104,17 +104,17 @@ const validateCustomer = (customer) => {
     var _a;
     const customerError = {};
     if (customer.firstName === undefined || !(0, validator_1.isNameValid)(customer.firstName)) {
-        customerError.firstNameError = "Sorry, first names can only contain alphabetic letters and cannot exceed " +
+        customerError.firstNameError = "Sorry, first names can only contain letters and cannot exceed " +
             "100 characters";
     }
     if (customer.middleName && ((_a = customer.middleName) === null || _a === void 0 ? void 0 : _a.length) > 0) {
         if (!(0, validator_1.isNameValid)(customer.middleName)) {
-            customerError.middleNameError = "Sorry, middle names can only contain alphabetic letters and cannot exceed " +
+            customerError.middleNameError = "Sorry, middle names can only contain letters and cannot exceed " +
                 "100 characters";
         }
     }
     if (customer.lastName === undefined || !(0, validator_1.isNameValid)(customer.lastName)) {
-        customerError.lastNameError = "Sorry, last names can only contain alphabetic letters and cannot exceed " +
+        customerError.lastNameError = "Sorry, last names can only contain letters and cannot exceed " +
             "100 characters";
     }
     if (customer.bankVerificationNumber === undefined || !(0, validator_1.isBankVerificationNumberValid)(customer.bankVerificationNumber)) {

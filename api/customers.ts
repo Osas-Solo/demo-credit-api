@@ -123,19 +123,19 @@ const validateCustomer = (customer: Customer): CustomerValidationError => {
     const customerError: CustomerValidationError = {};
 
     if (customer.firstName === undefined || !isNameValid(customer.firstName)) {
-        customerError.firstNameError = "Sorry, first names can only contain alphabetic letters and cannot exceed " +
+        customerError.firstNameError = "Sorry, first names can only contain letters and cannot exceed " +
             "100 characters";
     }
 
     if (customer.middleName && customer.middleName?.length > 0) {
         if (!isNameValid(customer.middleName)) {
-            customerError.middleNameError = "Sorry, middle names can only contain alphabetic letters and cannot exceed " +
+            customerError.middleNameError = "Sorry, middle names can only contain letters and cannot exceed " +
                 "100 characters";
         }
     }
 
     if (customer.lastName === undefined || !isNameValid(customer.lastName)) {
-        customerError.lastNameError = "Sorry, last names can only contain alphabetic letters and cannot exceed " +
+        customerError.lastNameError = "Sorry, last names can only contain letters and cannot exceed " +
             "100 characters";
     }
 
