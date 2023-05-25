@@ -6,15 +6,15 @@ const isNameValid = (name) => {
 };
 exports.isNameValid = isNameValid;
 const isBankVerificationNumberValid = (bvn) => {
-    return /[0-9]{11}/.test(bvn);
+    return /^[0-9]{11}$/.test(bvn);
 };
 exports.isBankVerificationNumberValid = isBankVerificationNumberValid;
 const isAccountNumberValid = (accountNumber) => {
-    return /[0-9]{10}/.test(accountNumber);
+    return /^[0-9]{10}$/.test(accountNumber);
 };
 exports.isAccountNumberValid = isAccountNumberValid;
 const isPinValid = (pin) => {
-    return /[0-9]{4}/.test(pin);
+    return /^[0-9]{4}$/.test(pin);
 };
 exports.isPinValid = isPinValid;
 const isAmountValid = (amount) => {

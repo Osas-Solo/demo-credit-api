@@ -3,15 +3,15 @@ const isNameValid = (name: string): boolean => {
 };
 
 const isBankVerificationNumberValid = (bvn: string): boolean => {
-    return /[0-9]{11}/.test(bvn);
+    return /^[0-9]{11}$/.test(bvn);
 };
 
 const isAccountNumberValid = (accountNumber: string): boolean => {
-    return /[0-9]{10}/.test(accountNumber);
+    return /^[0-9]{10}$/.test(accountNumber);
 };
 
 const isPinValid = (pin: string): boolean => {
-    return /[0-9]{4}/.test(pin);
+    return /^[0-9]{4}$/.test(pin);
 };
 
 const isAmountValid = (amount: string): boolean => {
