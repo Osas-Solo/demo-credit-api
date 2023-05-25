@@ -20,7 +20,7 @@ const signup = (request: Request, response: Response) => {
                     last_name: customer.lastName,
                     bank_verification_number: customer.bankVerificationNumber,
                     account_number: customer.accountNumber,
-                    pin: customer.pin,
+                    pin: knex.raw(`SHA(${customer.pin})`),
                 }
             ).then(() => {
                 const successResponse: APIResponse = {
@@ -92,7 +92,8 @@ const getCustomer = (request: Request, response: Response) => {
                     firstName: customer.first_name,
                     middleName: customer.middle_name,
                     lastName: customer.last_name,
-                    accountNumber: customer.account_number
+                    accountNumber: customer.account_number,
+                    accountBalance: customer.account_balance,
                 };
 
                 const successResponse: APIResponse = {

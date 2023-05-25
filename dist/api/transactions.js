@@ -13,56 +13,58 @@ const deposit = (request, response) => {
                 .first()
                 .then((customer) => {
                 if (customer) {
-                    if (customer.pin === transaction.pin) {
-                        const customerProfile = {
-                            id: customer.id,
-                            firstName: customer.first_name,
-                            middleName: customer.middle_name,
-                            lastName: customer.last_name,
-                            accountNumber: customer.account_number,
-                        };
-                        (0, database_1.knex)("transactions").insert({
-                            sender_id: customer.id,
-                            receiver_id: customer.id,
-                            amount: transaction.amount,
-                            type: "Deposit",
-                        }).then(() => {
-                            (0, database_1.knex)("customers").where("account_number", transaction.accountNumber)
-                                .update("account_balance", database_1.knex.raw("account_balance + ?", [transaction.amount]))
-                                .then(() => {
-                                (0, database_1.knex)("customers")
-                                    .where("account_number", transaction.accountNumber)
-                                    .first()
-                                    .then((updatedCustomerProfile) => {
-                                    const transactionDetails = {
-                                        sender: customerProfile,
-                                        receiver: customerProfile,
-                                        amount: Number(transaction.amount),
-                                        type: "Deposit",
-                                    };
-                                    const successResponse = {
-                                        status: 201,
-                                        message: "Deposit Success",
-                                        data: {
-                                            transaction: transactionDetails,
-                                            accountBalance: updatedCustomerProfile.account_balance,
-                                        },
-                                    };
-                                    console.log(successResponse);
-                                    response.status(201).json(successResponse);
+                    database_1.knex.select(database_1.knex.raw(`SHA(${transaction.pin}) AS hashedPin`)).first().then((result) => {
+                        if (customer.pin === result.hashedPin) {
+                            const customerProfile = {
+                                id: customer.id,
+                                firstName: customer.first_name,
+                                middleName: customer.middle_name,
+                                lastName: customer.last_name,
+                                accountNumber: customer.account_number,
+                            };
+                            (0, database_1.knex)("transactions").insert({
+                                sender_id: customer.id,
+                                receiver_id: customer.id,
+                                amount: transaction.amount,
+                                type: "Deposit",
+                            }).then(() => {
+                                (0, database_1.knex)("customers").where("account_number", transaction.accountNumber)
+                                    .update("account_balance", database_1.knex.raw("account_balance + ?", [transaction.amount]))
+                                    .then(() => {
+                                    (0, database_1.knex)("customers")
+                                        .where("account_number", transaction.accountNumber)
+                                        .first()
+                                        .then((updatedCustomerProfile) => {
+                                        const transactionDetails = {
+                                            sender: customerProfile,
+                                            receiver: customerProfile,
+                                            amount: Number(transaction.amount),
+                                            type: "Deposit",
+                                        };
+                                        const successResponse = {
+                                            status: 201,
+                                            message: "Deposit Success",
+                                            data: {
+                                                transaction: transactionDetails,
+                                                accountBalance: updatedCustomerProfile.account_balance,
+                                            },
+                                        };
+                                        console.log(successResponse);
+                                        response.status(201).json(successResponse);
+                                    });
                                 });
                             });
-                        });
-                    }
-                    else {
-                        const failureResponse = {
-                            status: 401,
-                            message: "Deposit Failure",
-                            error: "Sorry, the pin you entered is incorrect",
-                        };
-                        console.log(failureResponse);
-                        response.status(401).json(failureResponse);
-                    }
+                        }
+                        else {
+                            const failureResponse = {
+                                status: 401,
+                                message: "Deposit Failure",
+                                error: "Sorry, the pin you entered is incorrect",
+                            };
+                            console.log(failureResponse);
+                            response.status(401).json(failureResponse);
+                        }
+                    });
                 }
                 else {
                     const notFoundResponse = {
@@ -99,67 +101,69 @@ const withdraw = (request, response) => {
                 .first()
                 .then((customer) => {
                 if (customer) {
-                    if (customer.pin === transaction.pin) {
-                        if (transaction.amount <= customer.account_balance) {
-                            const customerProfile = {
-                                id: customer.id,
-                                firstName: customer.first_name,
-                                middleName: customer.middle_name,
-                                lastName: customer.last_name,
-                                accountNumber: customer.account_number,
-                            };
-                            (0, database_1.knex)("transactions").insert({
-                                sender_id: customer.id,
-                                receiver_id: customer.id,
-                                amount: transaction.amount,
-                                type: "Withdrawal",
-                            }).then(() => {
-                                (0, database_1.knex)("customers").where("account_number", transaction.accountNumber)
-                                    .update("account_balance", database_1.knex.raw("account_balance - ?", [transaction.amount]))
-                                    .then(() => {
-                                    (0, database_1.knex)("customers")
-                                        .where("account_number", transaction.accountNumber)
-                                        .first()
-                                        .then((updatedCustomerProfile) => {
-                                        const transactionDetails = {
-                                            sender: customerProfile,
-                                            receiver: customerProfile,
-                                            amount: Number(transaction.amount),
-                                            type: "Withdrawal",
-                                        };
-                                        const successResponse = {
-                                            status: 201,
-                                            message: "Withdrawal Success",
-                                            data: {
-                                                transaction: transactionDetails,
-                                                accountBalance: updatedCustomerProfile.account_balance,
-                                            },
-                                        };
-                                        console.log(successResponse);
-                                        response.status(201).json(successResponse);
+                    database_1.knex.select(database_1.knex.raw(`SHA(${transaction.pin}) AS hashedPin`)).first().then((result) => {
+                        if (customer.pin === result.hashedPin) {
+                            if (transaction.amount <= customer.account_balance) {
+                                const customerProfile = {
+                                    id: customer.id,
+                                    firstName: customer.first_name,
+                                    middleName: customer.middle_name,
+                                    lastName: customer.last_name,
+                                    accountNumber: customer.account_number,
+                                };
+                                (0, database_1.knex)("transactions").insert({
+                                    sender_id: customer.id,
+                                    receiver_id: customer.id,
+                                    amount: transaction.amount,
+                                    type: "Withdrawal",
+                                }).then(() => {
+                                    (0, database_1.knex)("customers").where("account_number", transaction.accountNumber)
+                                        .update("account_balance", database_1.knex.raw("account_balance - ?", [transaction.amount]))
+                                        .then(() => {
+                                        (0, database_1.knex)("customers")
+                                            .where("account_number", transaction.accountNumber)
+                                            .first()
+                                            .then((updatedCustomerProfile) => {
+                                            const transactionDetails = {
+                                                sender: customerProfile,
+                                                receiver: customerProfile,
+                                                amount: Number(transaction.amount),
+                                                type: "Withdrawal",
+                                            };
+                                            const successResponse = {
+                                                status: 201,
+                                                message: "Withdrawal Success",
+                                                data: {
+                                                    transaction: transactionDetails,
+                                                    accountBalance: updatedCustomerProfile.account_balance,
+                                                },
+                                            };
+                                            console.log(successResponse);
+                                            response.status(201).json(successResponse);
+                                        });
                                     });
                                 });
-                            });
+                            }
+                            else {
+                                const failureResponse = {
+                                    status: 401,
+                                    message: "Withdrawal Failure",
+                                    error: "Sorry, you do not have enough funds to make this withdrawal",
+                                };
+                                console.log(failureResponse);
+                                response.status(401).json(failureResponse);
+                            }
                         }
                         else {
                             const failureResponse = {
                                 status: 401,
                                 message: "Withdrawal Failure",
-                                error: "Sorry, you do not have enough funds to make this withdrawal",
+                                error: "Sorry, the pin you entered is incorrect",
                             };
                             console.log(failureResponse);
                             response.status(401).json(failureResponse);
                         }
-                    }
-                    else {
-                        const failureResponse = {
-                            status: 401,
-                            message: "Withdrawal Failure",
-                            error: "Sorry, the pin you entered is incorrect",
-                        };
-                        console.log(failureResponse);
-                        response.status(401).json(failureResponse);
-                    }
+                    });
                 }
                 else {
                     const notFoundResponse = {
@@ -206,7 +210,7 @@ const transfer = (request, response) => {
                     };
                     (0, database_1.knex)("customers").where({
                         account_number: senderAccountNumber,
-                        pin: transaction.pin
+                        pin: database_1.knex.raw(`SHA(${transaction.pin})`)
                     })
                         .first()
                         .then((sender) => {

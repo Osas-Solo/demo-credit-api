@@ -16,7 +16,7 @@ const signup = (request, response) => {
                 last_name: customer.lastName,
                 bank_verification_number: customer.bankVerificationNumber,
                 account_number: customer.accountNumber,
-                pin: customer.pin,
+                pin: database_1.knex.raw(`SHA(${customer.pin})`),
             }).then(() => {
                 const successResponse = {
                     status: 201,
@@ -83,7 +83,8 @@ const getCustomer = (request, response) => {
                 firstName: customer.first_name,
                 middleName: customer.middle_name,
                 lastName: customer.last_name,
-                accountNumber: customer.account_number
+                accountNumber: customer.account_number,
+                accountBalance: customer.account_balance,
             };
             const successResponse = {
                 status: 200,
