@@ -1,4 +1,4 @@
-import { Customer } from './customers';
+import {Customer} from './customers';
 
 export interface Transaction {
     id?: number,
@@ -7,4 +7,10 @@ export interface Transaction {
     amount: number,
     type: string,
     time?: string,
+}
+
+export interface TransactionRequest {
+    accountNumber: string,
+    pin: string,
+    amount: string,
 }

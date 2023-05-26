@@ -44,4 +44,10 @@ describe("GET /api/customers", () => {
 
         expect(response.status).toBe(200);
     });
+
+    it("should return 404 no customer with the account number 1111111111 is found", async () => {
+        const response = await request(app).get("/api/customers/1111111111");
+
+        expect(response.status).toBe(404);
+    });
 });

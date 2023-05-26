@@ -82,7 +82,8 @@ const getCustomer = (request: Request, response: Response) => {
             if (!customer) {
                 const notFoundResponse: APIResponse = {
                     status: 404,
-                    message: `No customer with the account number ${accountNumber} could be found`,
+                    message: "Customer Not Found",
+                    error: `No customer with the account number ${accountNumber} could be found`,
                 };
 
                 console.log(notFoundResponse);

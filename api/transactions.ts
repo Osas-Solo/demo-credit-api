@@ -3,7 +3,7 @@ import {Request, Response} from "express";
 import {APIResponse, sendServerErrorResponse} from "../models/responses";
 import {Customer} from "../models/customers";
 import {isAccountNumberValid, isAmountValid, isPinValid} from "../utils/validator";
-import {Transaction} from "../models/transactions";
+import {Transaction, TransactionRequest} from "../models/transactions";
 
 const deposit = (request: Request, response: Response) => {
     const transaction: TransactionRequest = request.body;
@@ -49,7 +49,7 @@ const deposit = (request: Request, response: Response) => {
                                                     };
 
                                                     const successResponse: APIResponse = {
-                                                        status: 201,
+                                                        status: 200,
                                                         message: "Deposit Success",
                                                         data: {
                                                             transaction: transactionDetails,
@@ -58,7 +58,7 @@ const deposit = (request: Request, response: Response) => {
                                                     };
 
                                                     console.log(successResponse);
-                                                    response.status(201).json(successResponse);
+                                                    response.status(200).json(successResponse);
                                                 });
                                         })
                                 });
@@ -144,7 +144,7 @@ const withdraw = (request: Request, response: Response) => {
                                                         };
 
                                                         const successResponse: APIResponse = {
-                                                            status: 201,
+                                                            status: 200,
                                                             message: "Withdrawal Success",
                                                             data: {
                                                                 transaction: transactionDetails,
@@ -153,7 +153,7 @@ const withdraw = (request: Request, response: Response) => {
                                                         };
 
                                                         console.log(successResponse);
-                                                        response.status(201).json(successResponse);
+                                                        response.status(200).json(successResponse);
                                                     });
                                             })
                                     });
@@ -267,7 +267,7 @@ const transfer = (request: Request, response: Response) => {
                                                             };
 
                                                             const successResponse: APIResponse = {
-                                                                status: 201,
+                                                                status: 200,
                                                                 message: "Transfer Success",
                                                                 data: {
                                                                     transaction: transactionDetails,
@@ -276,7 +276,7 @@ const transfer = (request: Request, response: Response) => {
                                                             };
 
                                                             console.log(successResponse);
-                                                            response.status(201).json(successResponse);
+                                                            response.status(200).json(successResponse);
                                                         });
                                                 })
                                         });
@@ -326,12 +326,6 @@ const transfer = (request: Request, response: Response) => {
         sendServerErrorResponse(e, response);
     }
 };
-
-interface TransactionRequest {
-    accountNumber: string,
-    pin: string,
-    amount: string,
-}
 
 interface TransactionValidationError {
     accountNumberError?: string,

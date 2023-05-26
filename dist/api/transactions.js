@@ -42,7 +42,7 @@ const deposit = (request, response) => {
                                             type: "Deposit",
                                         };
                                         const successResponse = {
-                                            status: 201,
+                                            status: 200,
                                             message: "Deposit Success",
                                             data: {
                                                 transaction: transactionDetails,
@@ -50,7 +50,7 @@ const deposit = (request, response) => {
                                             },
                                         };
                                         console.log(successResponse);
-                                        response.status(201).json(successResponse);
+                                        response.status(200).json(successResponse);
                                     });
                                 });
                             });
@@ -131,7 +131,7 @@ const withdraw = (request, response) => {
                                                 type: "Withdrawal",
                                             };
                                             const successResponse = {
-                                                status: 201,
+                                                status: 200,
                                                 message: "Withdrawal Success",
                                                 data: {
                                                     transaction: transactionDetails,
@@ -139,7 +139,7 @@ const withdraw = (request, response) => {
                                                 },
                                             };
                                             console.log(successResponse);
-                                            response.status(201).json(successResponse);
+                                            response.status(200).json(successResponse);
                                         });
                                     });
                                 });
@@ -246,7 +246,7 @@ const transfer = (request, response) => {
                                                 type: "Transfer",
                                             };
                                             const successResponse = {
-                                                status: 201,
+                                                status: 200,
                                                 message: "Transfer Success",
                                                 data: {
                                                     transaction: transactionDetails,
@@ -254,7 +254,7 @@ const transfer = (request, response) => {
                                                 },
                                             };
                                             console.log(successResponse);
-                                            response.status(201).json(successResponse);
+                                            response.status(200).json(successResponse);
                                         });
                                     });
                                 });
